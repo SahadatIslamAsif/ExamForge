@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using ExamForge.Domain.Entities;
 using ExamForge.Domain.Generation;
 using ExamForge.Infrastructure.Persistence;
@@ -19,9 +20,12 @@ public sealed class PaperGenerationService(
 {
     public const int MaxAttempts = 3;
 
-    // camelCase, like the API's request body. SpecJson is this canonical serialisation of the
-    // specification (with the resolved seed), not the raw HTTP body.
-    private static readonly JsonSerializerOptions SpecJsonOptions = new(JsonSerializerDefaults.Web);
+    // camelCase, like the API's request body, and enums as names. SpecJson is this canonical
+    // serialisation of the specification (with the resolved seed), not the raw HTTP body.
+    private static readonly JsonSerializerOptions SpecJsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        Converters = { new JsonStringEnumConverter() },
+    };
 
     public async Task<GenerationResult> GenerateAsync(
         PaperSpecification specification,
@@ -75,11 +79,12 @@ public sealed class PaperGenerationService(
             .Select(c => new { c.Id, c.Name, c.OrderIndex })
             .ToListAsync(cancellationToken);
 
+        // Ownership needs the database, so the API cannot check it up front. Report it before any
+        // history or pool is loaded, and long before solving.
         if (chapters.Count != chapterIds.Count)
         {
-            throw new ArgumentException(
-                $"Every chapter in the distribution must belong to subject {subject.Id}; validate before generating.",
-                nameof(specification));
+            var owned = chapters.Select(c => c.Id).ToHashSet();
+            return new GenerationResult.ChaptersNotInSubject(chapterIds.Where(id => !owned.Contains(id)).Order().ToList());
         }
 
         var history = await LoadHistoryAsync(context, subject.Id, specification.ExcludeLastNPapers, cancellationToken);

@@ -1,0 +1,101 @@
+using System.Net;
+using System.Text;
+using System.Text.Json.Nodes;
+using ExamForge.Tests.GenerationService;
+using ExamForge.Tests.Persistence;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ExamForge.Tests.Api;
+
+// Boots the real Program in memory, pointed at this test class's database and the fake clock.
+public sealed class ExamForgeApiFactory(
+    string connectionString,
+    TimeProvider clock,
+    Action<IServiceCollection>? configureServices = null) : WebApplicationFactory<Program>
+{
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.UseSetting("ConnectionStrings:ExamForge", connectionString);
+
+        // Runs after Program's own registrations, so these replace them.
+        builder.ConfigureTestServices(services =>
+        {
+            services.AddSingleton(clock);
+            configureServices?.Invoke(services);
+        });
+    }
+}
+
+public abstract class ApiTestBase(PostgresFixture postgres) : GenerationTestBase(postgres)
+{
+    protected const string GenerateUrl = "/api/papers/generate";
+
+    private readonly List<IDisposable> _disposables = [];
+    private HttpClient? _client;
+
+    protected HttpClient Client => _client ??= CreateClient();
+
+    protected HttpClient CreateClient(Action<IServiceCollection>? configureServices = null)
+    {
+        var factory = new ExamForgeApiFactory(Database.ConnectionString, Clock, configureServices);
+        var client = factory.CreateClient();
+        _disposables.Add(client);
+        _disposables.Add(factory);
+        return client;
+    }
+
+    public override Task DisposeAsync()
+    {
+        foreach (var disposable in _disposables)
+        {
+            disposable.Dispose();
+        }
+
+        return base.DisposeAsync();
+    }
+
+    // A valid request for the bank, as raw JSON so tests can break it in any way.
+    protected static JsonObject Request(
+        Bank bank,
+        int[] marksPerChapter,
+        long? seed = 42,
+        int excludeLastNPapers = 0,
+        string title = "Physics Practice — Week 6")
+    {
+        var request = new JsonObject
+        {
+            ["subjectId"] = bank.SubjectId,
+            ["title"] = title,
+            ["totalMarks"] = marksPerChapter.Sum(),
+            ["chapterDistribution"] = new JsonArray(bank.ChapterIds
+                .Zip(marksPerChapter, (id, marks) => (JsonNode)new JsonObject { ["chapterId"] = id, ["marks"] = marks })
+                .ToArray()),
+            ["difficultyMix"] = new JsonObject { ["easy"] = 0.3, ["medium"] = 0.5, ["hard"] = 0.2 },
+            ["excludeLastNPapers"] = excludeLastNPapers,
+        };
+        if (seed is not null)
+        {
+            request["seed"] = seed;
+        }
+
+        return request;
+    }
+
+    protected Task<HttpResponseMessage> PostGenerateAsync(JsonNode request, HttpClient? client = null) =>
+        (client ?? Client).PostAsync(GenerateUrl, new StringContent(request.ToJsonString(), Encoding.UTF8, "application/json"));
+
+    protected static async Task<JsonNode> JsonAsync(HttpResponseMessage response, HttpStatusCode expected)
+    {
+        var text = await response.Content.ReadAsStringAsync();
+        Assert.True(response.StatusCode == expected, $"Expected {(int)expected}, got {(int)response.StatusCode}: {text}");
+        return JsonNode.Parse(text)!;
+    }
+
+    protected static IEnumerable<string> Keys(JsonNode node) => node.AsObject().Select(p => p.Key).Order();
+
+    protected static List<int> QuestionIds(JsonNode paper) =>
+        paper["questions"]!.AsArray().Select(q => (int)q!["questionId"]!).ToList();
+}
