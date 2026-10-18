@@ -62,10 +62,10 @@ public abstract class GenerationTestBase(PostgresFixture postgres) : Persistence
             seed);
 
     // Writes a paper straight to the database, to set up history with exact timestamps.
-    protected async Task SeedHistoryPaperAsync(int subjectId, DateTimeOffset createdAt, params int[] questionIds)
+    protected async Task<int> SeedHistoryPaperAsync(int subjectId, DateTimeOffset createdAt, params int[] questionIds)
     {
         await using var context = NewContext();
-        context.Papers.Add(new Paper
+        var paper = new Paper
         {
             SubjectId = subjectId,
             Title = "History",
@@ -74,8 +74,10 @@ public abstract class GenerationTestBase(PostgresFixture postgres) : Persistence
             SpecJson = "{}",
             CreatedAt = createdAt,
             PaperQuestions = questionIds.Select((id, i) => new PaperQuestion { QuestionId = id, OrderIndex = i + 1 }).ToList(),
-        });
+        };
+        context.Papers.Add(paper);
         await context.SaveChangesAsync();
+        return paper.Id;
     }
 
     protected async Task<int> PaperCountAsync(int subjectId)

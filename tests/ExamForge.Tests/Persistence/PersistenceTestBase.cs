@@ -13,9 +13,9 @@ public abstract class PersistenceTestBase(PostgresFixture postgres) : IAsyncLife
 {
     private TestDatabase _database = null!;
 
-    public async Task InitializeAsync() => _database = await postgres.GetDatabaseAsync(GetType());
+    public virtual async Task InitializeAsync() => _database = await postgres.GetDatabaseAsync(GetType());
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public virtual Task DisposeAsync() => Task.CompletedTask;
 
     protected TestDatabase Database => _database;
 
