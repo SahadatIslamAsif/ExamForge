@@ -26,6 +26,7 @@ public class GenerateValidationApiTests(PostgresFixture postgres) : ApiTestBase(
     [InlineData("share below 0", "difficultyMix.easy")]
     [InlineData("share above 1", "difficultyMix.hard")]
     [InlineData("shares do not sum to 1", "difficultyMix")]
+    [InlineData("excludeLastNPapers missing", "excludeLastNPapers")]
     [InlineData("excludeLastNPapers negative", "excludeLastNPapers")]
     [InlineData("seed above the safe integer range", "seed")]
     [InlineData("seed below the safe integer range", "seed")]
@@ -104,6 +105,7 @@ public class GenerateValidationApiTests(PostgresFixture postgres) : ApiTestBase(
                 mix["hard"] = 1.2;
                 break;
             case "shares do not sum to 1": mix["hard"] = 0.3; break;
+            case "excludeLastNPapers missing": request.Remove("excludeLastNPapers"); break;
             case "excludeLastNPapers negative": request["excludeLastNPapers"] = -1; break;
             case "seed above the safe integer range": request["seed"] = 9_007_199_254_740_992; break;
             case "seed below the safe integer range": request["seed"] = -9_007_199_254_740_992; break;
