@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: examforge-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      # Bound to loopback only, so the database is not reachable from the network.
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
+    volumes:
+      # Postgres 18 images keep data in a versioned subdirectory of /var/lib/postgresql,
+      # so the volume is mounted there rather than at /var/lib/postgresql/data.
+      - examforge-pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  examforge-pgdata:
+    name: examforge-pgdata
