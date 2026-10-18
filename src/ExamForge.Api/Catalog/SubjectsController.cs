@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExamForge.Api.Catalog;
 
-[ApiController]
 [Route("api/subjects")]
-public sealed class SubjectsController(ISubjectService subjects) : ControllerBase
+public sealed class SubjectsController(ISubjectService subjects) : ApiControllerBase
 {
     [HttpPost]
     [ProducesResponseType<SubjectResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public async Task<IActionResult> Create(CreateSubjectRequest request, CancellationToken cancellationToken)
     {
         var (errors, subject) = CatalogValidators.Validate(request);
@@ -29,7 +28,7 @@ public sealed class SubjectsController(ISubjectService subjects) : ControllerBas
 
     [HttpGet("{id:int}")]
     [ProducesResponseType<SubjectResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken) =>
         await subjects.GetAsync(id, cancellationToken) is { } subject ? Ok(ToResponse(subject)) : NotFound();
 

@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExamForge.Api.Catalog;
 
-[ApiController]
 [Route("api/chapters")]
-public sealed class ChaptersController(IChapterService chapters) : ControllerBase
+public sealed class ChaptersController(IChapterService chapters) : ApiControllerBase
 {
     [HttpPost]
     [ProducesResponseType<ChapterResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create(CreateChapterRequest request, CancellationToken cancellationToken)
     {
@@ -26,8 +25,8 @@ public sealed class ChaptersController(IChapterService chapters) : ControllerBas
 
     [HttpGet]
     [ProducesResponseType<List<ChapterResponse>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     public async Task<IActionResult> List([FromQuery] int? subjectId, CancellationToken cancellationToken)
     {
         if (subjectId is null)
@@ -41,7 +40,7 @@ public sealed class ChaptersController(IChapterService chapters) : ControllerBas
 
     [HttpGet("{id:int}")]
     [ProducesResponseType<ChapterResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken) =>
         await chapters.GetAsync(id, cancellationToken) is { } chapter ? Ok(ToResponse(chapter)) : NotFound();
 

@@ -33,6 +33,50 @@ public class OpenApiTests(PostgresFixture postgres) : ApiTestBase(postgres)
     }
 
     [Fact]
+    public async Task Operations_only_consume_and_produce_json()
+    {
+        var paths = (await DocumentAsync())["paths"]!.AsObject();
+        var operations = paths.SelectMany(path => path.Value!.AsObject()
+            .Where(op => op.Value!["responses"] is not null)
+            .Select(op => (Name: $"{op.Key.ToUpperInvariant()} {path.Key}", Operation: op.Value!)));
+
+        foreach (var (name, operation) in operations)
+        {
+            if (operation["requestBody"]?["content"] is JsonObject requestContent)
+            {
+                Assert.True(requestContent.Select(c => c.Key).SequenceEqual(["application/json"]), $"{name} consumes {requestContent.ToJsonString()}");
+            }
+
+            foreach (var (status, response) in operation["responses"]!.AsObject())
+            {
+                if (response!["content"] is not JsonObject content)
+                {
+                    continue; // e.g. 204
+                }
+
+                // Errors are problem details (RFC 9457), everything else plain JSON.
+                var expected = status is "400" or "404" ? "application/problem+json" : "application/json";
+                Assert.True(content.Select(c => c.Key).SequenceEqual([expected]), $"{name} {status} produces {string.Join(", ", content.Select(c => c.Key))}");
+            }
+        }
+    }
+
+    [Fact]
+    public async Task Errors_are_problem_json_and_non_json_bodies_are_rejected()
+    {
+        var invalid = await Client.PostAsync("/api/subjects", new StringContent("{}", System.Text.Encoding.UTF8, "application/json"));
+        Assert.Equal(HttpStatusCode.BadRequest, invalid.StatusCode);
+        Assert.Equal("application/problem+json", invalid.Content.Headers.ContentType!.MediaType);
+
+        var notFound = await Client.GetAsync("/api/subjects/999999");
+        Assert.Equal("application/problem+json", notFound.Content.Headers.ContentType!.MediaType);
+
+        var textJson = await Client.PostAsync(
+            "/api/subjects", new StringContent("""{"name":"X","level":"Y"}""", System.Text.Encoding.UTF8, "text/json"));
+        Assert.Equal(HttpStatusCode.UnsupportedMediaType, textJson.StatusCode);
+    }
+
+    [Fact]
     public async Task Difficulty_is_a_string_enum_in_the_schema()
     {
         var difficulty = (await DocumentAsync())["components"]!["schemas"]!["Difficulty"]!;

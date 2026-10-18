@@ -6,14 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace ExamForge.Api.Papers;
 
 // Thin by design: validate, call a service, map the result. No DbContext, no generation logic.
-[ApiController]
 [Route("api/papers")]
-public sealed class PapersController(IPaperGenerationService generator, IPaperReadService reader) : ControllerBase
+public sealed class PapersController(IPaperGenerationService generator, IPaperReadService reader) : ApiControllerBase
 {
     [HttpPost("generate")]
     [ProducesResponseType<PaperResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
     [ProducesResponseType<InfeasibleResponse>(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> Generate(GeneratePaperRequest request, CancellationToken cancellationToken)
@@ -48,7 +47,7 @@ public sealed class PapersController(IPaperGenerationService generator, IPaperRe
 
     [HttpGet("{id:int}")]
     [ProducesResponseType<PaperResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
         var paper = await reader.GetAsync(id, cancellationToken);
@@ -57,8 +56,8 @@ public sealed class PapersController(IPaperGenerationService generator, IPaperRe
 
     [HttpGet]
     [ProducesResponseType<List<PaperSummaryResponse>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     public async Task<IActionResult> List([FromQuery] int? subjectId, CancellationToken cancellationToken)
     {
         if (subjectId is null)

@@ -7,6 +7,7 @@ using ExamForge.Infrastructure.Catalog;
 using ExamForge.Infrastructure.Generation;
 using ExamForge.Infrastructure.Papers;
 using ExamForge.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +16,17 @@ var builder = WebApplication.CreateBuilder(args);
 // purpose: controllers serialise with the MVC JSON options, but the OpenAPI generator describes
 // types using the minimal-API JSON options. With only the first, the document would claim
 // Difficulty is an integer while the API sends "Easy".
-builder.Services.AddControllers()
+builder.Services.AddControllers(options =>
+    {
+        // JSON only: drop the text/plain formatter and the legacy text/json media type, so content
+        // negotiation and the OpenAPI document offer application/json alone. application/*+json
+        // stays on the output side because errors are written as application/problem+json.
+        options.OutputFormatters.RemoveType<StringOutputFormatter>();
+        options.OutputFormatters.OfType<SystemTextJsonOutputFormatter>().Single().SupportedMediaTypes.Remove("text/json");
+        var input = options.InputFormatters.OfType<SystemTextJsonInputFormatter>().Single();
+        input.SupportedMediaTypes.Remove("text/json");
+        input.SupportedMediaTypes.Remove("application/*+json");
+    })
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 // The OpenAPI document comes from Microsoft.AspNetCore.OpenApi; Swagger UI (below) only renders it.
