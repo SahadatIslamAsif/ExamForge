@@ -36,6 +36,37 @@ public class GenerationFailureTests(PostgresFixture postgres) : GenerationTestBa
     }
 
     [Fact]
+    public async Task Chapters_outside_the_subject_are_listed_and_nothing_is_saved()
+    {
+        var bank = await SeedBankAsync([5, 5]);
+        var other = await SeedBankAsync([5, 5]);
+        const int missingChapterId = 999_999;
+        var spec = new PaperSpecification(
+            bank.SubjectId,
+            "Mixed",
+            15,
+            [new ChapterMarks(bank.ChapterIds[0], 5), new ChapterMarks(missingChapterId, 5), new ChapterMarks(other.ChapterIds[0], 5)],
+            DefaultMix,
+            0,
+            42);
+
+        var result = await NewService().GenerateAsync(spec);
+
+        var notInSubject = Assert.IsType<GenerationResult.ChaptersNotInSubject>(result);
+        Assert.Equal([other.ChapterIds[0], missingChapterId], notInSubject.ChapterIds);
+        Assert.Equal(0, await PaperCountAsync(bank.SubjectId));
+    }
+
+    [Fact]
+    public async Task An_unknown_subject_is_reported_before_its_chapters_are_checked()
+    {
+        var other = await SeedBankAsync([5]);
+        var spec = new PaperSpecification(999_999, "Nope", 5, [new ChapterMarks(other.ChapterIds[0], 5)], DefaultMix, 0, 42);
+
+        Assert.IsType<GenerationResult.SubjectNotFound>(await NewService().GenerateAsync(spec));
+    }
+
+    [Fact]
     public async Task Enough_marks_but_no_exact_combination_is_an_exact_marks_failure()
     {
         var bank = await SeedBankAsync([2, 4, 6]);

@@ -20,6 +20,12 @@ public abstract record GenerationResult
 
     public sealed record SubjectNotFound(int SubjectId) : GenerationResult;
 
+    /// <summary>
+    /// Requested chapters that do not exist or belong to another subject, ascending. Checked
+    /// after the subject (so an unknown subject is a 404 first) and before any solving.
+    /// </summary>
+    public sealed record ChaptersNotInSubject(IReadOnlyList<int> ChapterIds) : GenerationResult;
+
     /// <summary>Other generations for the subject kept committing first. Nothing was saved.</summary>
     public sealed record Conflict(int Attempts) : GenerationResult;
 }
