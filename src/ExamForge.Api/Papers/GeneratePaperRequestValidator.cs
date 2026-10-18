@@ -46,7 +46,13 @@ public static class GeneratePaperRequestValidator
         ValidateDistribution(request, Add);
         ValidateMix(request.DifficultyMix, Add);
 
-        if (request.ExcludeLastNPapers < 0)
+        // Required, with no default: silently treating a missing value as 0 would switch off
+        // history exclusion without the client noticing.
+        if (request.ExcludeLastNPapers is null)
+        {
+            Add("excludeLastNPapers", "excludeLastNPapers is required (send 0 to disable the history window).");
+        }
+        else if (request.ExcludeLastNPapers < 0)
         {
             Add("excludeLastNPapers", "excludeLastNPapers must be 0 or greater (0 disables the history window).");
         }
@@ -70,7 +76,7 @@ public static class GeneratePaperRequestValidator
             request.TotalMarks!.Value,
             request.ChapterDistribution!.Select(c => new ChapterMarks(c!.ChapterId!.Value, c.Marks!.Value)).ToList(),
             new DifficultyMix(request.DifficultyMix!.Easy!.Value, request.DifficultyMix.Medium!.Value, request.DifficultyMix.Hard!.Value),
-            request.ExcludeLastNPapers ?? 0,
+            request.ExcludeLastNPapers!.Value,
             request.Seed);
 
     private static void ValidateDistribution(GeneratePaperRequest request, Action<string, string> add)

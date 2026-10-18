@@ -16,15 +16,7 @@ public sealed class PapersController(IPaperGenerationService generator, IPaperRe
         var errors = GeneratePaperRequestValidator.Validate(request);
         if (errors.Count > 0)
         {
-            foreach (var (field, messages) in errors)
-            {
-                foreach (var message in messages)
-                {
-                    ModelState.AddModelError(field, message);
-                }
-            }
-
-            return ValidationProblem(ModelState);
+            return this.FieldErrors(errors);
         }
 
         var specification = GeneratePaperRequestValidator.ToSpecification(request);
@@ -61,19 +53,15 @@ public sealed class PapersController(IPaperGenerationService generator, IPaperRe
     {
         if (subjectId is null)
         {
-            ModelState.AddModelError("subjectId", "subjectId is required.");
-            return ValidationProblem(ModelState);
+            return this.FieldError("subjectId", "subjectId is required.");
         }
 
         var papers = await reader.ListForSubjectAsync(subjectId.Value, cancellationToken);
         return papers is null ? NotFound() : Ok(papers.Select(PaperMapping.ToResponse).ToList());
     }
 
-    private IActionResult ChaptersNotInSubject(GenerationResult.ChaptersNotInSubject result, int subjectId)
-    {
-        ModelState.AddModelError(
+    private IActionResult ChaptersNotInSubject(GenerationResult.ChaptersNotInSubject result, int subjectId) =>
+        this.FieldError(
             "chapterDistribution",
             $"Chapters {string.Join(", ", result.ChapterIds)} do not exist or do not belong to subject {subjectId}.");
-        return ValidationProblem(ModelState);
-    }
 }

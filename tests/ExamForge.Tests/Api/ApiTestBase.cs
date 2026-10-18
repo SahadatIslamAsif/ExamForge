@@ -85,7 +85,31 @@ public abstract class ApiTestBase(PostgresFixture postgres) : GenerationTestBase
     }
 
     protected Task<HttpResponseMessage> PostGenerateAsync(JsonNode request, HttpClient? client = null) =>
-        (client ?? Client).PostAsync(GenerateUrl, new StringContent(request.ToJsonString(), Encoding.UTF8, "application/json"));
+        (client ?? Client).PostAsync(GenerateUrl, JsonBody(request));
+
+    protected Task<HttpResponseMessage> PostAsync(string url, JsonNode body) => Client.PostAsync(url, JsonBody(body));
+
+    protected Task<HttpResponseMessage> PatchAsync(string url, JsonNode body) => Client.PatchAsync(url, JsonBody(body));
+
+    private static StringContent JsonBody(JsonNode body) => new(body.ToJsonString(), Encoding.UTF8, "application/json");
+
+    // A 400 ValidationProblemDetails with at least one message for the field.
+    protected static async Task AssertFieldErrorAsync(HttpResponseMessage response, string field)
+    {
+        var body = await JsonAsync(response, HttpStatusCode.BadRequest);
+        var errors = body["errors"]!.AsObject();
+        Assert.True(errors.ContainsKey(field), $"Expected an error for '{field}', got: {errors.ToJsonString()}");
+        Assert.NotEmpty(errors[field]!.AsArray());
+    }
+
+    // A 409 with the {error, message} body; returns the message.
+    protected static async Task<string> AssertConflictAsync(HttpResponseMessage response, string error)
+    {
+        var body = await JsonAsync(response, HttpStatusCode.Conflict);
+        Assert.Equal(["error", "message"], Keys(body));
+        Assert.Equal(error, (string)body["error"]!);
+        return (string)body["message"]!;
+    }
 
     protected static async Task<JsonNode> JsonAsync(HttpResponseMessage response, HttpStatusCode expected)
     {
