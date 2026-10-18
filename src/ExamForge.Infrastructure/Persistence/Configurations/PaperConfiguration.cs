@@ -12,8 +12,10 @@ public class PaperConfiguration : IEntityTypeConfiguration<Paper>
 
         builder.Property(p => p.Title).HasMaxLength(200).IsRequired();
 
-        // jsonb rather than json: smaller, and queryable if the history ever needs it.
-        builder.Property(p => p.SpecJson).HasColumnType("jsonb").IsRequired();
+        // json, not jsonb: json keeps the request text exactly as received (whitespace,
+        // key order, duplicate keys), which is what "stored verbatim" means. jsonb would
+        // re-serialise it.
+        builder.Property(p => p.SpecJson).HasColumnType("json").IsRequired();
 
         builder.HasOne(p => p.Subject)
             .WithMany(s => s.Papers)

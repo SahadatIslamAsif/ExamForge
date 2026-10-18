@@ -16,7 +16,14 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
         builder.Property(q => q.Difficulty).HasConversion<string>().HasMaxLength(20);
         builder.Property(q => q.Type).HasConversion<string>().HasMaxLength(20);
 
-        builder.ToTable(t => t.HasCheckConstraint("CK_Questions_Marks_Positive", "\"Marks\" > 0"));
+        // The string conversion alone would accept any text, so the database enforces the
+        // allowed names itself. Keep these lists in step with the enums.
+        builder.ToTable(t =>
+        {
+            t.HasCheckConstraint("CK_Questions_Marks_Positive", "\"Marks\" > 0");
+            t.HasCheckConstraint("CK_Questions_Difficulty_Valid", "\"Difficulty\" IN ('Easy', 'Medium', 'Hard')");
+            t.HasCheckConstraint("CK_Questions_Type_Valid", "\"Type\" IN ('Mcq', 'Short', 'Structured')");
+        });
 
         builder.HasOne(q => q.Chapter)
             .WithMany(c => c.Questions)
