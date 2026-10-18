@@ -11,6 +11,11 @@ namespace ExamForge.Api.Papers;
 public sealed class PapersController(IPaperGenerationService generator, IPaperReadService reader) : ControllerBase
 {
     [HttpPost("generate")]
+    [ProducesResponseType<PaperResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<InfeasibleResponse>(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> Generate(GeneratePaperRequest request, CancellationToken cancellationToken)
     {
         var errors = GeneratePaperRequestValidator.Validate(request);
@@ -42,6 +47,8 @@ public sealed class PapersController(IPaperGenerationService generator, IPaperRe
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType<PaperResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
         var paper = await reader.GetAsync(id, cancellationToken);
@@ -49,6 +56,9 @@ public sealed class PapersController(IPaperGenerationService generator, IPaperRe
     }
 
     [HttpGet]
+    [ProducesResponseType<List<PaperSummaryResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> List([FromQuery] int? subjectId, CancellationToken cancellationToken)
     {
         if (subjectId is null)

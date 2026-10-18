@@ -1,3 +1,4 @@
+using ExamForge.Api.Papers;
 using ExamForge.Domain.Catalog;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,9 @@ namespace ExamForge.Api.Catalog;
 public sealed class ChaptersController(IChapterService chapters) : ControllerBase
 {
     [HttpPost]
+    [ProducesResponseType<ChapterResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create(CreateChapterRequest request, CancellationToken cancellationToken)
     {
         var (errors, chapter) = CatalogValidators.Validate(request);
@@ -21,6 +25,9 @@ public sealed class ChaptersController(IChapterService chapters) : ControllerBas
     }
 
     [HttpGet]
+    [ProducesResponseType<List<ChapterResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> List([FromQuery] int? subjectId, CancellationToken cancellationToken)
     {
         if (subjectId is null)
@@ -33,6 +40,8 @@ public sealed class ChaptersController(IChapterService chapters) : ControllerBas
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType<ChapterResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken) =>
         await chapters.GetAsync(id, cancellationToken) is { } chapter ? Ok(ToResponse(chapter)) : NotFound();
 

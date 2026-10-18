@@ -8,6 +8,8 @@ namespace ExamForge.Api.Catalog;
 public sealed class SubjectsController(ISubjectService subjects) : ControllerBase
 {
     [HttpPost]
+    [ProducesResponseType<SubjectResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(CreateSubjectRequest request, CancellationToken cancellationToken)
     {
         var (errors, subject) = CatalogValidators.Validate(request);
@@ -21,10 +23,13 @@ public sealed class SubjectsController(ISubjectService subjects) : ControllerBas
     }
 
     [HttpGet]
+    [ProducesResponseType<List<SubjectResponse>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> List(CancellationToken cancellationToken) =>
         Ok((await subjects.ListAsync(cancellationToken)).Select(ToResponse).ToList());
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType<SubjectResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken) =>
         await subjects.GetAsync(id, cancellationToken) is { } subject ? Ok(ToResponse(subject)) : NotFound();
 

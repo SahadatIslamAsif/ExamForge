@@ -1,3 +1,4 @@
+using ExamForge.Api.Papers;
 using ExamForge.Domain.Catalog;
 using ExamForge.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,8 @@ namespace ExamForge.Api.Catalog;
 public sealed class QuestionsController(IQuestionService questions) : ControllerBase
 {
     [HttpPost]
+    [ProducesResponseType<QuestionResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(CreateQuestionRequest request, CancellationToken cancellationToken)
     {
         var (errors, question) = CatalogValidators.Validate(request);
@@ -22,6 +25,8 @@ public sealed class QuestionsController(IQuestionService questions) : Controller
     }
 
     [HttpGet]
+    [ProducesResponseType<List<QuestionResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> List([FromQuery] int? chapterId, [FromQuery] string? difficulty, CancellationToken cancellationToken)
     {
         Difficulty? parsed = null;
@@ -40,10 +45,16 @@ public sealed class QuestionsController(IQuestionService questions) : Controller
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType<QuestionResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken) =>
         await questions.GetAsync(id, cancellationToken) is { } question ? Ok(ToResponse(question)) : NotFound();
 
     [HttpPatch("{id:int}")]
+    [ProducesResponseType<QuestionResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Update(int id, UpdateQuestionRequest request, CancellationToken cancellationToken)
     {
         var (errors, changes) = CatalogValidators.Validate(request);
@@ -57,6 +68,9 @@ public sealed class QuestionsController(IQuestionService questions) : Controller
     }
 
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken) =>
         this.FromCatalog(await questions.DeleteAsync(id, cancellationToken), _ => NoContent());
 
