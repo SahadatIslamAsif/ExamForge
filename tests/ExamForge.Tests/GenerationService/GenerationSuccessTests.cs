@@ -57,6 +57,21 @@ public class GenerationSuccessTests(PostgresFixture postgres) : GenerationTestBa
     }
 
     [Fact]
+    public async Task SpecJson_is_the_readable_canonical_specification_with_the_seed_used()
+    {
+        var bank = await SeedBankAsync(ChapterBank);
+        var seeds = new SequenceSeedSource(123);
+
+        var paper = AssertSuccess(await NewService(seeds).GenerateAsync(Spec(bank, [20], seed: null)));
+
+        await using var context = NewContext();
+        var stored = await context.Papers.AsNoTracking().SingleAsync(p => p.Id == paper.Id);
+        Assert.Equal(
+            $$"""{"subjectId":{{bank.SubjectId}},"title":"Practice paper","totalMarks":20,"chapterDistribution":[{"chapterId":{{bank.ChapterIds[0]}},"marks":20}],"difficultyMix":{"easy":0.3,"medium":0.5,"hard":0.2},"excludeLastNPapers":0,"seed":123}""",
+            stored.SpecJson);
+    }
+
+    [Fact]
     public async Task An_unknown_subject_is_reported_and_nothing_is_saved()
     {
         var spec = new PaperSpecification(999_999, "Nope", 5, [new ChapterMarks(1, 5)], DefaultMix, 0, 42);

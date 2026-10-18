@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using ExamForge.Domain.Entities;
 using ExamForge.Domain.Generation;
 using ExamForge.Infrastructure.Persistence;
@@ -19,9 +20,12 @@ public sealed class PaperGenerationService(
 {
     public const int MaxAttempts = 3;
 
-    // camelCase, like the API's request body. SpecJson is this canonical serialisation of the
-    // specification (with the resolved seed), not the raw HTTP body.
-    private static readonly JsonSerializerOptions SpecJsonOptions = new(JsonSerializerDefaults.Web);
+    // camelCase, like the API's request body, and enums as names. SpecJson is this canonical
+    // serialisation of the specification (with the resolved seed), not the raw HTTP body.
+    private static readonly JsonSerializerOptions SpecJsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        Converters = { new JsonStringEnumConverter() },
+    };
 
     public async Task<GenerationResult> GenerateAsync(
         PaperSpecification specification,
