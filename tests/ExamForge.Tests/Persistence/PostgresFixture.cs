@@ -39,9 +39,11 @@ public sealed class PostgresFixture : IAsyncLifetime
     // Each test class asks for its database by its own type. The first request creates and
     // migrates it; later requests (one per test method) reuse it.
     public Task<TestDatabase> GetDatabaseAsync(Type testClass) =>
-        _databases.GetOrAdd(testClass, _ => new Lazy<Task<TestDatabase>>(CreateDatabaseAsync)).Value;
+        _databases.GetOrAdd(testClass, _ => new Lazy<Task<TestDatabase>>(() => CreateDatabaseAsync())).Value;
 
-    private async Task<TestDatabase> CreateDatabaseAsync()
+    // A brand-new database for a single test. migrate: false leaves it without any schema, for
+    // code that is expected to apply the migrations itself.
+    public async Task<TestDatabase> CreateDatabaseAsync(bool migrate = true)
     {
         var name = $"t_{Guid.NewGuid():N}";
 
@@ -59,9 +61,12 @@ public sealed class PostgresFixture : IAsyncLifetime
 
         var database = new TestDatabase(connectionString);
 
-        // The real migrations, not EnsureCreated: this is what proves the migration itself.
-        await using var context = database.NewContext();
-        await context.Database.MigrateAsync();
+        if (migrate)
+        {
+            // The real migrations, not EnsureCreated: this is what proves the migration itself.
+            await using var context = database.NewContext();
+            await context.Database.MigrateAsync();
+        }
 
         return database;
     }

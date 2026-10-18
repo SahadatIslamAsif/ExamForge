@@ -19,6 +19,8 @@ public abstract class PersistenceTestBase(PostgresFixture postgres) : IAsyncLife
 
     protected TestDatabase Database => _database;
 
+    protected PostgresFixture Postgres => postgres;
+
     protected ExamForgeDbContext NewContext() => _database.NewContext();
 
     protected async Task<int> SeedSubjectAsync()
