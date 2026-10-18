@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
+using ExamForge.Domain.Catalog;
 using ExamForge.Domain.Generation;
 using ExamForge.Domain.Papers;
+using ExamForge.Infrastructure.Catalog;
 using ExamForge.Infrastructure.Generation;
 using ExamForge.Infrastructure.Papers;
 using ExamForge.Infrastructure.Persistence;
@@ -27,6 +29,9 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<ISeedSource, SystemSeedSource>();
 builder.Services.AddScoped<IPaperGenerationService, PaperGenerationService>();
 builder.Services.AddScoped<IPaperReadService, PaperReadService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<IChapterService, ChapterService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
 
 var app = builder.Build();
 
