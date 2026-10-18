@@ -1,0 +1,118 @@
+{
+  "subjects": [
+    {
+      "name": "Physics",
+      "level": "O Level",
+      "chapters": [
+        {
+          "name": "Motion",
+          "orderIndex": 1,
+          "questions": [
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "A cyclist rides 600 m in 2.0 minutes at a steady speed. What is the cyclist's speed?\nA. 3.0 m/s\nB. 5.0 m/s\nC. 300 m/s\nD. 1200 m/s" },
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "Which of these quantities is a vector?\nA. distance\nB. speed\nC. time\nD. velocity" },
+            { "marks": 1, "difficulty": "Medium", "type": "Mcq", "text": "What does the area under the line of a speed-time graph represent?\nA. acceleration\nB. distance travelled\nC. average speed\nD. time taken" },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "A bus travels 45 km in 0.75 hours. Calculate its average speed in km/h." },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "State the difference between speed and velocity." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "A car increases its velocity from 8.0 m/s to 20 m/s in 4.0 s. Calculate its acceleration." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "A stone is dropped from rest and falls freely for 1.5 s. Taking g = 9.8 m/s² and ignoring air resistance, calculate its speed after 1.5 s." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A train slows down uniformly from 24 m/s to rest in 30 s. Calculate the distance it travels while slowing down." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A car travels 30 km at a steady 60 km/h and then a further 30 km at a steady 30 km/h. Calculate its average speed for the whole 60 km journey." },
+            { "marks": 3, "difficulty": "Hard", "type": "Short", "text": "A ball is thrown vertically upwards at 14 m/s. Taking g = 9.8 m/s² and ignoring air resistance, calculate the maximum height it reaches above the point of release." },
+            { "marks": 4, "difficulty": "Hard", "type": "Structured", "text": "A lift starts from rest and accelerates uniformly to 3.0 m/s in 2.0 s. It then moves at 3.0 m/s for 6.0 s and finally slows uniformly to rest in 3.0 s.\n(a) Calculate the acceleration of the lift during the first 2.0 s. [1]\n(b) Calculate the total distance travelled by the lift. [3]" },
+            { "marks": 5, "difficulty": "Hard", "type": "Structured", "text": "A parcel is released from a delivery drone hovering high above a field. The parcel's speed increases at first and then becomes constant. Later a small parachute attached to the parcel opens.\n(a) Explain, in terms of the forces acting on the parcel, why its speed becomes constant. [2]\n(b) Describe and explain how the speed of the parcel changes just after the parachute opens. [2]\n(c) State the name given to the constant speed reached by a falling object. [1]" }
+          ]
+        },
+        {
+          "name": "Forces",
+          "orderIndex": 2,
+          "questions": [
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "An astronaut has a mass of 70 kg on Earth. What is her mass on the Moon?\nA. 0 kg\nB. 12 kg\nC. 70 kg\nD. 420 kg" },
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "Which unit is used to measure force?\nA. joule\nB. newton\nC. pascal\nD. watt" },
+            { "marks": 1, "difficulty": "Medium", "type": "Mcq", "text": "Two horizontal forces act on a box: 12 N to the left and 5 N to the right. What is the resultant force on the box?\nA. 7 N to the left\nB. 7 N to the right\nC. 17 N to the left\nD. 17 N to the right" },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "A bag of rice has a mass of 5.0 kg. Calculate its weight on Earth, where g = 9.8 N/kg." },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "State two different effects that a force can have on an object." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "A resultant force of 1200 N acts on a car of mass 800 kg. Calculate the acceleration of the car." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "A spring obeys Hooke's law. A load of 4.0 N stretches it by 2.5 cm. Calculate the extension produced by a load of 6.0 N, assuming the limit of proportionality is not exceeded." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A uniform plank is balanced on a pivot at its centre. A child of weight 300 N sits 1.2 m from the pivot. Calculate how far from the pivot, on the other side, a child of weight 400 N must sit for the plank to balance." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A trolley of mass 2.0 kg moving at 3.0 m/s collides with a stationary trolley of mass 1.0 kg, and the two stick together. Calculate their speed immediately after the collision." },
+            { "marks": 3, "difficulty": "Hard", "type": "Short", "text": "A crane lifts a crate of mass 600 kg vertically using an upward force of 6600 N. Taking g = 9.8 N/kg, calculate the acceleration of the crate." },
+            { "marks": 4, "difficulty": "Hard", "type": "Structured", "text": "A student hangs loads from a spring of unstretched length 5.0 cm. With a 2.0 N load the length is 7.0 cm, with 4.0 N it is 9.0 cm and with 6.0 N it is 11.5 cm.\n(a) Calculate the extension of the spring with the 4.0 N load. [1]\n(b) Use your answer to (a) to calculate the spring constant in N/cm. [1]\n(c) Explain whether the spring obeys Hooke's law for all loads up to 6.0 N. [2]" },
+            { "marks": 5, "difficulty": "Hard", "type": "Structured", "text": "A uniform beam 4.0 m long and of weight 200 N rests horizontally on two supports, one at each end. A load of 600 N is placed on the beam 1.0 m from the left-hand end.\n(a) State the two conditions needed for the beam to be in equilibrium. [2]\n(b) Calculate the upward force exerted on the beam by the right-hand support. [3]" }
+          ]
+        },
+        {
+          "name": "Energy and Pressure",
+          "orderIndex": 3,
+          "questions": [
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "Which of these is the unit of power?\nA. joule\nB. newton\nC. pascal\nD. watt" },
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "A block has a mass of 240 g and a volume of 30 cm³. What is its density?\nA. 0.125 g/cm³\nB. 8.0 g/cm³\nC. 210 g/cm³\nD. 7200 g/cm³" },
+            { "marks": 1, "difficulty": "Medium", "type": "Mcq", "text": "A horizontal force of 50 N pushes a box 4.0 m across a floor in the direction of the force. How much work is done on the box?\nA. 12.5 J\nB. 46 J\nC. 54 J\nD. 200 J" },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "A woman of weight 600 N stands still on a floor. Her shoes touch the floor over a total area of 0.030 m². Calculate the pressure she exerts on the floor." },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "A lamp is supplied with 60 J of energy every second and gives out 9.0 J of this as light. Calculate the efficiency of the lamp." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "Calculate the kinetic energy of a car of mass 1200 kg moving at 15 m/s." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "A motor lifts a 50 kg load vertically through 6.0 m in 12 s at a steady speed. Taking g = 9.8 N/kg, calculate the useful power output of the motor." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A swimming pool is 2.5 m deep. The density of water is 1000 kg/m³ and g = 9.8 N/kg. Calculate the pressure due to the water at the bottom of the pool, and state why the total pressure there is greater than this value." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A ball of mass 0.50 kg is dropped from rest from a height of 3.2 m. Taking g = 9.8 N/kg and ignoring air resistance, calculate its speed just before it hits the ground." },
+            { "marks": 3, "difficulty": "Hard", "type": "Short", "text": "A car of mass 900 kg travelling at 20 m/s brakes and stops in a distance of 25 m. Calculate the average braking force on the car." },
+            { "marks": 4, "difficulty": "Hard", "type": "Structured", "text": "In a hydraulic jack, the small piston has an area of 4.0 × 10⁻⁴ m² and the large piston has an area of 2.0 × 10⁻² m². A force of 150 N is applied to the small piston.\n(a) Calculate the pressure produced in the liquid. [1]\n(b) Calculate the force exerted by the liquid on the large piston. [1]\n(c) Explain why the jack works poorly if there are air bubbles in the liquid. [2]" },
+            { "marks": 5, "difficulty": "Hard", "type": "Structured", "text": "An electric pump raises 90 kg of water from a well through a vertical height of 8.0 m every minute. The pump takes in electrical energy at a rate of 200 W. Take g = 9.8 N/kg.\n(a) Calculate the gravitational potential energy gained by the water in one minute. [2]\n(b) Calculate the efficiency of the pump. [2]\n(c) Suggest one reason why the efficiency of the pump is less than 100%. [1]" }
+          ]
+        },
+        {
+          "name": "Thermal Physics",
+          "orderIndex": 4,
+          "questions": [
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "In which state of matter are the particles close together and only vibrating about fixed positions?\nA. solid only\nB. liquid only\nC. gas only\nD. liquid and gas" },
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "By which process can thermal energy travel through a vacuum?\nA. conduction\nB. convection\nC. evaporation\nD. radiation" },
+            { "marks": 1, "difficulty": "Medium", "type": "Mcq", "text": "Pure water is heated at normal atmospheric pressure until it boils. What happens to its temperature while it continues to boil?\nA. it rises steadily\nB. it stays the same\nC. it falls\nD. it rises and then falls" },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "A metal spoon and a plastic spoon are left in the same cup of hot tea. Explain why the handle of the metal spoon soon feels hotter." },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "State two ways of making a puddle of water evaporate more quickly." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "Calculate the energy needed to raise the temperature of 2.0 kg of water by 15 °C. The specific heat capacity of water is 4200 J/(kg °C)." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "Using ideas about particles, explain why the pressure of a gas in a sealed container increases when the gas is heated." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A 50 W heater warms a 0.40 kg block of metal for 120 s, and the block's temperature rises by 15 °C. Assuming no energy is lost to the surroundings, calculate the specific heat capacity of the metal." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "Calculate the energy needed to melt 0.25 kg of ice at 0 °C. The specific latent heat of fusion of ice is 3.3 × 10⁵ J/kg. State what happens to the temperature of the ice while it melts." },
+            { "marks": 3, "difficulty": "Hard", "type": "Short", "text": "Explain, in terms of particles, why evaporation cools the liquid that is left behind." },
+            { "marks": 4, "difficulty": "Hard", "type": "Structured", "text": "An electric kettle with a 2400 W heating element heats 1.5 kg of water from 20 °C to 100 °C. The specific heat capacity of water is 4200 J/(kg °C).\n(a) Calculate the energy needed to heat the water. [2]\n(b) Calculate the shortest time this could take. [1]\n(c) Suggest why the actual time taken is longer. [1]" },
+            { "marks": 5, "difficulty": "Hard", "type": "Structured", "text": "A bicycle pump with its outlet blocked contains 60 cm³ of air at a pressure of 1.0 × 10⁵ Pa. The piston is pushed in slowly until the volume of the air is 20 cm³. The temperature of the air stays constant.\n(a) Calculate the new pressure of the air. [2]\n(b) Explain, in terms of particles, why the pressure has increased. [2]\n(c) State why the piston must be pushed in slowly for your calculation in (a) to be valid. [1]" }
+          ]
+        },
+        {
+          "name": "Waves and Light",
+          "orderIndex": 5,
+          "questions": [
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "Which of these is a longitudinal wave?\nA. light\nB. microwaves\nC. sound in air\nD. a wave on a stretched string" },
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "Which part of the electromagnetic spectrum has the longest wavelength?\nA. gamma rays\nB. radio waves\nC. ultraviolet\nD. visible light" },
+            { "marks": 1, "difficulty": "Medium", "type": "Mcq", "text": "A ray of light strikes a plane mirror. The angle between the incident ray and the surface of the mirror is 30°. What is the angle of reflection?\nA. 30°\nB. 45°\nC. 60°\nD. 120°" },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "A water wave has a frequency of 4.0 Hz and a wavelength of 0.50 m. Calculate the speed of the wave." },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "State two properties that all electromagnetic waves have in common." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "A student stands 165 m in front of a tall wall and claps once. She hears the echo 1.0 s after the clap. Calculate the speed of sound in air." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "Explain why a ray of light changes direction when it passes at an angle from air into glass." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A ray of light passes from air into a glass block. The angle of incidence is 40° and the angle of refraction is 25°. Calculate the refractive index of the glass." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A radio station broadcasts at a frequency of 95 MHz. The speed of electromagnetic waves is 3.0 × 10⁸ m/s. Calculate the wavelength of the radio waves." },
+            { "marks": 3, "difficulty": "Hard", "type": "Short", "text": "A type of glass has a refractive index of 1.50. Calculate its critical angle, and state the two conditions needed for total internal reflection to happen in this glass." },
+            { "marks": 4, "difficulty": "Hard", "type": "Structured", "text": "An object 2.0 cm tall stands 15 cm from a thin converging lens of focal length 10 cm. A sharp image forms on a screen 30 cm from the lens on the other side.\n(a) State two properties of the image. [2]\n(b) Calculate the height of the image. [2]" },
+            { "marks": 5, "difficulty": "Hard", "type": "Structured", "text": "A ship measures the depth of the sea by sending pulses of ultrasound straight down. A pulse returns to the ship 0.12 s after it is sent. The speed of sound in sea water is 1500 m/s.\n(a) State what is meant by ultrasound. [1]\n(b) Calculate the depth of the sea below the ship. [2]\n(c) The ultrasound has a frequency of 40 kHz. Calculate its wavelength in sea water. [2]" }
+          ]
+        },
+        {
+          "name": "Electricity",
+          "orderIndex": 6,
+          "questions": [
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "What is the unit of electrical resistance?\nA. ampere\nB. ohm\nC. volt\nD. watt" },
+            { "marks": 1, "difficulty": "Easy", "type": "Mcq", "text": "Which instrument is connected in parallel with a component to measure the potential difference across it?\nA. ammeter\nB. galvanometer\nC. thermometer\nD. voltmeter" },
+            { "marks": 1, "difficulty": "Medium", "type": "Mcq", "text": "Two 6.0 Ω resistors are connected in parallel. What is their combined resistance?\nA. 3.0 Ω\nB. 6.0 Ω\nC. 12 Ω\nD. 36 Ω" },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "The current in a lamp is 0.25 A when the potential difference across it is 6.0 V. Calculate the resistance of the lamp." },
+            { "marks": 2, "difficulty": "Easy", "type": "Short", "text": "State the purpose of the fuse in a plug, and describe what happens to the fuse when the current becomes too large." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "A charge of 180 C flows through a heater in 1.5 minutes. Calculate the current in the heater." },
+            { "marks": 2, "difficulty": "Medium", "type": "Short", "text": "A 2.0 kW heater is switched on for 3.0 hours. Calculate the energy it transfers in kilowatt-hours, and the cost of this energy if 1 kW h costs 25 cents." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "A 4.0 Ω resistor and an 8.0 Ω resistor are connected in series to a 6.0 V battery of negligible internal resistance. Calculate the current in the circuit and the potential difference across the 8.0 Ω resistor." },
+            { "marks": 3, "difficulty": "Medium", "type": "Short", "text": "An electric kettle is rated at 230 V, 2.3 kW. Calculate the current it takes when working normally, and choose a suitable fuse for it from 3 A, 5 A and 13 A." },
+            { "marks": 3, "difficulty": "Hard", "type": "Short", "text": "A 3.0 Ω resistor and a 6.0 Ω resistor are connected in parallel across a 12 V battery of negligible internal resistance. Calculate the total current supplied by the battery." },
+            { "marks": 4, "difficulty": "Hard", "type": "Structured", "text": "A filament lamp is labelled 12 V, 36 W.\n(a) Calculate the current in the lamp when it works normally. [1]\n(b) Calculate the resistance of the lamp when it works normally. [1]\n(c) The resistance of the filament is much lower when it is cold. Explain why, and state the effect on the current at the moment the lamp is switched on. [2]" },
+            { "marks": 5, "difficulty": "Hard", "type": "Structured", "text": "A thermistor is connected in series with a 1.0 kΩ fixed resistor across a 9.0 V supply of negligible internal resistance.\n(a) State how the resistance of the thermistor changes as its temperature rises. [1]\n(b) At room temperature the resistance of the thermistor is 2.0 kΩ. Calculate the potential difference across the fixed resistor. [2]\n(c) The thermistor is now warmed. Explain what happens to the potential difference across the fixed resistor. [2]" }
+          ]
+        }
+      ]
+    }
+  ]
+}

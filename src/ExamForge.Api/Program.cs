@@ -7,10 +7,22 @@ using ExamForge.Infrastructure.Catalog;
 using ExamForge.Infrastructure.Generation;
 using ExamForge.Infrastructure.Papers;
 using ExamForge.Infrastructure.Persistence;
+using ExamForge.Infrastructure.Seeding;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// `-- --seed` loads seed/questions.json and exits instead of serving. EF's logs are quietened for
+// that run so the output is the command's one-line summary. The command log is silenced fully:
+// on a new database EF probes the not-yet-created migrations table and logs that as an error,
+// although it is expected. Real failures still surface: SeedCommand prints them and exits 1.
+var seeding = args.Contains(SeedCommand.Argument);
+if (seeding)
+{
+    builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+    builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.None);
+}
 
 // Enums as names ("Easy"), not numbers, in every request and response. Registered twice on
 // purpose: controllers serialise with the MVC JSON options, but the OpenAPI generator describes
@@ -48,8 +60,14 @@ builder.Services.AddScoped<IPaperReadService, PaperReadService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IChapterService, ChapterService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<QuestionBankSeeder>();
 
 var app = builder.Build();
+
+if (seeding)
+{
+    return await SeedCommand.RunAsync(app.Services, Console.Out, Console.Error);
+}
 
 // The document and the UI are for local exploration only.
 if (app.Environment.IsDevelopment())
@@ -66,3 +84,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+return 0;
