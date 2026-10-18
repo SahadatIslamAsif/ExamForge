@@ -20,7 +20,7 @@ public class PaperSolverTests
     // A pool with a spread of marks and difficulties, built from the index so it is fixed.
     private static SolverQuestion[] AmplePool(int chapterId, int firstId, int size = 20) =>
         Enumerable.Range(0, size)
-            .Select(i => Q(firstId + i, chapterId, 1 + i % 4, (Difficulty)(i % 3)))
+            .Select(i => Q(firstId + i, chapterId, 1 + i % 4, TestDifficulty.Cycle(i)))
             .ToArray();
 
     private static (ChapterRequest[] Requests, IReadOnlyDictionary<int, IReadOnlyList<SolverQuestion>> Pools) AmpleSpec() =>
@@ -125,7 +125,7 @@ public class PaperSolverTests
             for (var chapterId = 1; chapterId <= chapterCount; chapterId++)
             {
                 var pool = Enumerable.Range(0, 2 + specRandom.NextInt(14))
-                    .Select(_ => Q(nextId++, chapterId, 1 + specRandom.NextInt(5), (Difficulty)specRandom.NextInt(3)))
+                    .Select(_ => Q(nextId++, chapterId, 1 + specRandom.NextInt(5), TestDifficulty.Cycle(specRandom.NextInt(3))))
                     .ToList();
 
                 // The target is the sum of a random non-empty subset, so it is feasible by construction.

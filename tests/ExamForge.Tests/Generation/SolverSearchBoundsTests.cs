@@ -45,7 +45,7 @@ public class SolverSearchBoundsTests
     {
         var threeMark = new SolverQuestion(1000, 1, 3, Difficulty.Medium);
         var pool = Enumerable.Range(1, 50)
-            .Select(id => new SolverQuestion(id, 1, 2, (Difficulty)(id % 3)))
+            .Select(id => new SolverQuestion(id, 1, 2, TestDifficulty.Cycle(id)))
             .Append(threeMark)
             .ToList();
 
@@ -66,7 +66,7 @@ public class SolverSearchBoundsTests
     public async Task CombinationCap_StopsTheSearchOnAHugeSolutionSpace(int seed)
     {
         var pool = Enumerable.Range(1, 40)
-            .Select(id => new SolverQuestion(id, 1, 1, (Difficulty)(id % 3)))
+            .Select(id => new SolverQuestion(id, 1, 1, TestDifficulty.Cycle(id)))
             .ToList();
 
         var result = await SolveWithinTimeout(20, pool, seed);
