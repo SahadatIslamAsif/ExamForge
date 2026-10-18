@@ -9,6 +9,8 @@ namespace ExamForge.Infrastructure.Catalog;
 public sealed class QuestionService(IDbContextFactory<ExamForgeDbContext> contextFactory, TimeProvider timeProvider)
     : IQuestionService
 {
+    public const int MaxEditAttempts = 3;
+
     public async Task<CatalogResult<QuestionInfo>> CreateAsync(NewQuestion question, CancellationToken cancellationToken = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
@@ -66,8 +68,35 @@ public sealed class QuestionService(IDbContextFactory<ExamForgeDbContext> contex
         QuestionChanges changes,
         CancellationToken cancellationToken = default)
     {
-        await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
+        for (var attempt = 1; ; attempt++)
+        {
+            // A fresh context per attempt: the retry re-loads the question and re-checks usage.
+            await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
+            try
+            {
+                return await UpdateOnceAsync(context, id, changes, cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException) when (attempt < MaxEditAttempts)
+            {
+                // A generation (or another edit) for the subject committed after this attempt read
+                // the subject's version. It may have put this question in a paper: start again.
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return new CatalogResult<QuestionInfo>.Conflict(
+                    CatalogErrors.ConcurrentEdit,
+                    $"Question {id} could not be saved: papers for its subject kept being generated at the same time. "
+                    + "Try again.");
+            }
+        }
+    }
 
+    private async Task<CatalogResult<QuestionInfo>> UpdateOnceAsync(
+        ExamForgeDbContext context,
+        int id,
+        QuestionChanges changes,
+        CancellationToken cancellationToken)
+    {
         var question = await context.Questions.SingleOrDefaultAsync(q => q.Id == id, cancellationToken);
         if (question is null)
         {
@@ -86,6 +115,18 @@ public sealed class QuestionService(IDbContextFactory<ExamForgeDbContext> contex
             .Where(field => field.Item2)
             .Select(field => field.Item1)
             .ToList();
+
+        // An edit to anything but isActive changes what a paper would show, so it must be
+        // serialised against generation, which updates the Subject row on every paper. The
+        // subjects (old chapter's and, on a move, new chapter's) are loaded tracked, with their
+        // xmin, BEFORE the usage check: a paper committed after this read changes that xmin, so
+        // either the check below sees the paper or the save below fails and the edit starts again.
+        var subjects = changed.Count == 0
+            ? []
+            : await context.Subjects
+                .Where(s => s.Chapters.Any(c => c.Id == question.ChapterId || c.Id == changes.ChapterId))
+                .OrderBy(s => s.Id)
+                .ToListAsync(cancellationToken);
 
         var usedInPapers = await UsageAsync(context, id, cancellationToken);
         if (usedInPapers > 0 && changed.Count > 0)
@@ -110,6 +151,16 @@ public sealed class QuestionService(IDbContextFactory<ExamForgeDbContext> contex
         question.Type = changes.Type ?? question.Type;
         question.IsActive = changes.IsActive ?? question.IsActive;
 
+        // Force an UPDATE of each subject row without changing any value: marking the property
+        // modified makes EF write it back as-is, "WHERE xmin = <version read>". Postgres gives the
+        // row a new version (new xmin) on every UPDATE, even an identical one, so a generation that
+        // read the old version will fail its own save and retry. LastGeneratedAt keeps its value.
+        foreach (var subject in subjects)
+        {
+            context.Entry(subject).Property(s => s.LastGeneratedAt).IsModified = true;
+        }
+
+        // One SaveChanges, one transaction: the question and the subject touches commit together.
         await context.SaveChangesAsync(cancellationToken);
         return new CatalogResult<QuestionInfo>.Ok(ToInfo(question, usedInPapers));
     }

@@ -25,4 +25,5 @@ public static class CatalogErrors
 {
     public const string QuestionInUse = "QUESTION_IN_USE";
     public const string ChapterOrderTaken = "CHAPTER_ORDER_TAKEN";
+    public const string ConcurrentEdit = "CONCURRENT_EDIT";
 }
