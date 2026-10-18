@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ExamForge.Api/ExamForge.Api.csproj" />
+    <Project Path="src/ExamForge.Domain/ExamForge.Domain.csproj" />
+    <Project Path="src/ExamForge.Infrastructure/ExamForge.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ExamForge.Tests/ExamForge.Tests.csproj" />
+  </Folder>
+</Solution>
