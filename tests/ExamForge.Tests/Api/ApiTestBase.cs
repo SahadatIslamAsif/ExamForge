@@ -14,10 +14,12 @@ namespace ExamForge.Tests.Api;
 public sealed class ExamForgeApiFactory(
     string connectionString,
     TimeProvider clock,
-    Action<IServiceCollection>? configureServices = null) : WebApplicationFactory<Program>
+    Action<IServiceCollection>? configureServices = null,
+    string environment = "Development") : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment(environment);
         builder.UseSetting("ConnectionStrings:ExamForge", connectionString);
 
         // Runs after Program's own registrations, so these replace them.
@@ -38,9 +40,9 @@ public abstract class ApiTestBase(PostgresFixture postgres) : GenerationTestBase
 
     protected HttpClient Client => _client ??= CreateClient();
 
-    protected HttpClient CreateClient(Action<IServiceCollection>? configureServices = null)
+    protected HttpClient CreateClient(Action<IServiceCollection>? configureServices = null, string environment = "Development")
     {
-        var factory = new ExamForgeApiFactory(Database.ConnectionString, Clock, configureServices);
+        var factory = new ExamForgeApiFactory(Database.ConnectionString, Clock, configureServices, environment);
         var client = factory.CreateClient();
         _disposables.Add(client);
         _disposables.Add(factory);
