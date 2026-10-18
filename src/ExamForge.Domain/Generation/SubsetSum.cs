@@ -30,4 +30,32 @@ public static class SubsetSum
 
         return reachable[target];
     }
+
+    /// <summary>
+    /// Reachability of every suffix: <c>table[i][s]</c> is true when some subset of
+    /// <c>marks[i..]</c> sums to exactly s, for s in 0..target. <c>table[marks.Count]</c> is true
+    /// only at 0. The selection walk uses it to prune branches that cannot reach the target.
+    /// </summary>
+    public static bool[][] SuffixTable(IReadOnlyList<int> marks, int target)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(target);
+
+        var table = new bool[marks.Count + 1][];
+        table[marks.Count] = new bool[target + 1];
+        table[marks.Count][0] = true;
+
+        for (var i = marks.Count - 1; i >= 0; i--)
+        {
+            var mark = marks[i];
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(mark, nameof(marks));
+
+            table[i] = new bool[target + 1];
+            for (var sum = 0; sum <= target; sum++)
+            {
+                table[i][sum] = table[i + 1][sum] || (sum >= mark && table[i + 1][sum - mark]);
+            }
+        }
+
+        return table;
+    }
 }
