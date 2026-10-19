@@ -6,6 +6,24 @@ returns a paper whose marks add up **exactly**, with no question from the last N
 and the same seed gives the same paper again. When the bank cannot do that, it answers
 `422` and names every chapter that falls short. It never returns a short paper.
 
+![Swagger UI listing the ExamForge endpoints](docs/images/swagger.png)
+
+```mermaid
+flowchart LR
+    A[POST /generate] --> B{validate}
+    B -- invalid --> E400[400]
+    B --> C{load subject}
+    C -- unknown --> E404[404]
+    C --> D[load pool<br/>and history]
+    D --> S{solve}
+    S -- infeasible --> E422[422]
+    S --> V[verify] --> W{save}
+    W -- conflict --> R{3 attempts?}
+    R -- no --> C
+    R -- yes --> E409[409]
+    W --> OK[201]
+```
+
 ## Why
 
 I tutor O Level students and set their practice papers by hand. Hand-built papers go
@@ -13,8 +31,6 @@ wrong in three ways: the marks drift (a "50-mark" paper comes out at 47 or 53), 
 few chapters get tested every week, and questions come back while students still
 remember them. ExamForge fixes those three things and nothing else: no auth, no
 frontend, no export ([docs/PRD.md](docs/PRD.md) has the full problem and scope).
-
-![Swagger UI listing the ExamForge endpoints](docs/images/swagger.png)
 
 ## Quickstart
 
@@ -186,6 +202,11 @@ Every unmet chapter is listed, with what was asked, what was available and why. 
 is saved. The other constraint, `exactMarks`, covers the subtler case: enough marks in
 total, but no combination that adds up to exactly the target (2-, 4- and 6-mark
 questions cannot make 9).
+
+The same in Swagger UI on a freshly seeded bank, asking for 30 marks from Motion, which
+holds 29 in all:
+
+![Swagger UI showing a 422 for 30 marks requested from a 29-mark chapter](docs/images/honest-failure.png)
 
 ## Tests
 
