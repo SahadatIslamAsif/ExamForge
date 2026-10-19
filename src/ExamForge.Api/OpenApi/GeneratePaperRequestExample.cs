@@ -7,7 +7,8 @@ namespace ExamForge.Api.OpenApi;
 
 /// <summary>
 /// Puts the request from docs/SPEC.md on the GeneratePaperRequest schema, so Swagger UI's
-/// "Try it out" starts from a realistic body instead of zeros and "string".
+/// "Try it out" starts from a realistic body instead of zeros and "string". The chapter ids
+/// exist in a freshly seeded bank (chapters 1–6), so the example works as sent.
 /// </summary>
 public sealed class GeneratePaperRequestExample : IOpenApiSchemaTransformer
 {
@@ -24,7 +25,7 @@ public sealed class GeneratePaperRequestExample : IOpenApiSchemaTransformer
                 ["chapterDistribution"] = new JsonArray(
                     new JsonObject { ["chapterId"] = 3, ["marks"] = 20 },
                     new JsonObject { ["chapterId"] = 4, ["marks"] = 20 },
-                    new JsonObject { ["chapterId"] = 7, ["marks"] = 10 }),
+                    new JsonObject { ["chapterId"] = 5, ["marks"] = 10 }),
                 ["difficultyMix"] = new JsonObject { ["easy"] = 0.3, ["medium"] = 0.5, ["hard"] = 0.2 },
                 ["excludeLastNPapers"] = 3,
                 ["seed"] = 20261018,

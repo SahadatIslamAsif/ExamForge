@@ -1,0 +1,12 @@
+{
+  "subjectId": 1,
+  "title": "Week 7 practice",
+  "totalMarks": 50,
+  "chapterDistribution": [
+    { "chapterId": 1, "marks": 25 },
+    { "chapterId": 2, "marks": 25 }
+  ],
+  "difficultyMix": { "easy": 0.3, "medium": 0.5, "hard": 0.2 },
+  "excludeLastNPapers": 1,
+  "seed": 20261019
+}
