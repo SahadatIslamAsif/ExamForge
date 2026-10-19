@@ -45,7 +45,9 @@ builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.C
 builder.Services.AddOpenApi(options => options.AddSchemaTransformer<GeneratePaperRequestExample>());
 
 // The connection string is read when the first context is created, not here, so tests can
-// supply their own. It is never committed: use user-secrets or ConnectionStrings__ExamForge.
+// supply their own. appsettings.Development.json holds only the .env.example placeholder, so a
+// fresh clone runs; user-secrets and ConnectionStrings__ExamForge override it, and a real
+// password belongs in one of those, never in a committed file.
 builder.Services.AddDbContextFactory<ExamForgeDbContext>((services, options) =>
     options.UseNpgsql(
         services.GetRequiredService<IConfiguration>().GetConnectionString("ExamForge")
