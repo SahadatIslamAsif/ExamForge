@@ -60,13 +60,12 @@ asks for 6 marks from each of the first two chapters
 ([docs/examples/generate-paper.json](docs/examples/generate-paper.json)):
 
 ```sh
-curl -s -X POST http://localhost:5080/api/papers/generate \
-  -H "Content-Type: application/json" \
-  --data "@docs/examples/generate-paper.json"
+curl -s -X POST http://localhost:5080/api/papers/generate -H "Content-Type: application/json" --data "@docs/examples/generate-paper.json"
 ```
 
-(In Windows PowerShell type `curl.exe`, because `curl` there is an alias for
-`Invoke-WebRequest`. Or use Swagger UI's "Try it out".)
+One line on purpose, so it pastes into any shell. In Windows PowerShell type `curl.exe`,
+because `curl` there is an alias for `Invoke-WebRequest`. Or use Swagger UI's "Try it
+out", whose example body also works on the seed bank.
 
 `201 Created`, captured from a fresh clone (the question texts are original, written
 for this project):
